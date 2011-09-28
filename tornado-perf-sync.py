@@ -11,7 +11,7 @@ class Handler(web.RequestHandler):
 
     def get(self, id):
         try:
-            msg = find_one({"_id": id})
+            msg = db.messages.find_one({"_id": id})
             self.write("200 OK")
         except:
             self.write("404 NOT FOUND")
