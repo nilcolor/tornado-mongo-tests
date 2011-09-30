@@ -17,13 +17,16 @@ class Handler(web.RequestHandler):
 
     @web.asynchronous
     def get(self, id):
-        self.db.messages.find({"_id": int(id)}, limit=1, callback=self._on_response)
+        self.db.messages.find({"_id": int(id)}, limit=50, callback=self._on_response)
 
     def _on_response(self, response, error):
         if error:
             self.write("404 NOT FOUND")
         else:
-            self.write("200 OK")
+            counter = 0
+            for m in response:
+                counter += len(m['longStringAttribute'])
+            self.write("200 OK. Char counter = %i" % counter)
         self.finish()
 
 
@@ -33,4 +36,7 @@ app = web.Application([
 
 if __name__ == "__main__":
     app.listen(8888)
+    print "*" * 80
+    print " Server started"
+    print "*" * 80
     ioloop.IOLoop.instance().start()
